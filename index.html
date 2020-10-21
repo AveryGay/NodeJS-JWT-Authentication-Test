@@ -28,6 +28,7 @@
             <div>
                 <button onclick="login()">Login</button>
                 <button onclick="getDashboard()">Get Dashboard</button>
+                <button onclick="getSettings()">Get Settings</button>
             </div>
         </main>
     </div>
@@ -46,12 +47,10 @@
                 if (res && res.data && res.data.success) {
                     const token = res.data.token;
                     localStorage.setItem('jwt', token);
-                    getDashboard();
+                    getSettings();
                 }
             });
     }
-
-
 
     function getDashboard() {
         const token = localStorage.getItem('jwt');
@@ -67,13 +66,28 @@
         });
     }
 
-    function onLoad() {
+    function getSettings() {
         const token = localStorage.getItem('jwt');
-        if (token) {
-            getDashboard();
-        }
+        axios.get('/api/settings', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }).then(res => {
+            if (res && res.data && res.data.success) {
+                document.querySelector('h1.row').innerHTML = 'Settings';
+                document.querySelector('main').innerHTML = res.data.myContent;
+            }
+        });
     }
-    onLoad();
+
+    //function onLoad() {
+        //const token = localStorage.getItem('jwt');
+        //if (token) {
+            //getDashboard();
+            //getSettings();
+        //}
+    //}
+    //onLoad();
 </script>
 
 </body>
